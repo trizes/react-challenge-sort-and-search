@@ -7,28 +7,24 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      sorting: '',
     };
   }
 
-  componentDidMount() {
-    fetch('/data.json')
-    .then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      console.log(json)
-      this.setState({ data: json })
-    }.bind(this)).catch(function(ex) {
-      console.log('parsing failed', ex)
-    })
+  nameSort() {
+    console.log('nameSort')
+  }
+
+  ageSort() {
+    console.log('ageSort')
   }
 
   render() {
     return (
       <div className="app container-fluid">
         <SearchBar />
-        <Toolbar />
-        <Userlist list = { this.state.data } />
+        <Toolbar ageSort = { this.ageSort } nameSort = { this.nameSort } />
+        <Userlist sorting = { this.state.sorting } />
       </div>
     );
   }
