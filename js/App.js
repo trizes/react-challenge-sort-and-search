@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Button from './components/Button';
 import SearchBar from './components/SearchBar';
+import Toolbar from './components/Toolbar';
+import Userlist from './components/Userlist';
 
 export default class App extends Component {
   constructor(props) {
@@ -21,10 +23,10 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="container app">
-        <Button count={this.state.count} update={this.updateBtn.bind(this)} />
+      <div className="app container-fluid">
         <SearchBar />
-        <p style={{marginTop: 2 + 'rem'}}>{this.state.phrase}</p>
+        <Toolbar />
+        <Userlist />
       </div>
     );
   }

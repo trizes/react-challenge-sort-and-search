@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 
-const SearchBar = ({}) => {
-  return (
-    <h1>it works</h1>
-  );
+export default class SearchBar extends Component {
+  render() {
+    return(
+      <div className="row">
+        <div className="col-sm-12">
+          <div className="searchbar form-group">
+            <input className="form-control" type="text" placeholder="Search people by name..." />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
-
-export default SearchBar;
