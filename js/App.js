@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Button from './components/Button';
 import SearchBar from './components/SearchBar';
 import Toolbar from './components/Toolbar';
 import Userlist from './components/Userlist';
@@ -8,17 +7,20 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phrase: 'Нажми на кнопку!',
-      count: 0
+      data: []
     };
   }
 
-  updateBtn() {
-    const phrases = [ 'Фраза.' ];
-    this.setState({
-      count: this.state.count + 1,
-      phrase: phrases[0]
-    });
+  componentDidMount() {
+    fetch('/data.json')
+    .then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      console.log(json)
+      this.setState({ data: json })
+    }.bind(this)).catch(function(ex) {
+      console.log('parsing failed', ex)
+    })
   }
 
   render() {
@@ -26,7 +28,7 @@ export default class App extends Component {
       <div className="app container-fluid">
         <SearchBar />
         <Toolbar />
-        <Userlist />
+        <Userlist list = { this.state.data } />
       </div>
     );
   }

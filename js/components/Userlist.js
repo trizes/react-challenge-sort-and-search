@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import UserData from './UserData';
 import ActiveUser from './ActiveUser';
 
-export default class SearchBar extends Component {
+export default class Userlist extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
+  }
+
   render() {
     return(
       <div className="row">
@@ -17,13 +24,13 @@ export default class SearchBar extends Component {
               </tr>
             </thead>
             <tbody>
-              <UserData />
+              <UserData user = { this.props.list[0] } ></UserData>
             </tbody>
           </table>
         </div>
 
         <div className="col-sm-4 col-md-3 col-lg-2">
-          <ActiveUser />
+          <ActiveUser user = { this.props.list[0] } />
         </div>
       </div>
     );
