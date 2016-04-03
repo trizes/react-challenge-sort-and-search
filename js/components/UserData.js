@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 
 export default class UserData extends Component {
-  focusUser(id) {
-    this.props.focusUser({ id })
+  focusUser(user) {
+    this.props.focusUser({ user })
   }
 
   render() {
     let user = this.props.user;
 
     return(
-      <tr onClick = { this.focusUser.bind(this, user.id) } >
+      <tr onClick = { this.focusUser.bind(this, user) } >
         <td>
           <img src= { `images/${user.image}.svg` } />
         </td>

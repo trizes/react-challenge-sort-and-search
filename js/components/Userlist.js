@@ -6,25 +6,7 @@ export default class Userlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      activeUser: ''
     };
-  }
-
-  componentDidMount() {
-    const component = this;
-
-    fetch('/data.json')
-    .then( response => { return response.json() })
-    .then( json => {
-      component.setState({ data: json, activeUser: json[0] })
-    })
-  }
-
-  focusUser(id) {
-    this.setState({
-      activeUser: this.state.data[id.id]
-    })
   }
 
   render() {
@@ -42,10 +24,10 @@ export default class Userlist extends Component {
             </thead>
             <tbody>
               {
-                this.state.data.map( user => {
+                this.props.users.map( user => {
                   return <UserData
                           user = { user }
-                          focusUser = { this.focusUser.bind(this) }
+                          focusUser = { this.props.focusUser }
                           key = { user.id }
                           />
                 })
@@ -55,7 +37,7 @@ export default class Userlist extends Component {
         </div>
 
         <div className="col-sm-4 col-md-3 col-lg-2">
-          <ActiveUser user = { this.state.activeUser } />
+          <ActiveUser user = { this.props.activeUser } />
         </div>
       </div>
     );
