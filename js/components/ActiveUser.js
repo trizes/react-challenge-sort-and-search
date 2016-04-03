@@ -8,6 +8,7 @@ export default class ActiveUser extends Component {
         <p>Nothing Found</p>
       )
     }
+
     return(
       <div className="thumbnail">
         <img src= { `images/${user.image}.svg` } />
