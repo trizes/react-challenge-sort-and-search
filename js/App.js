@@ -1,52 +1,110 @@
 import React, { Component } from 'react';
-import Button from './components/Button';
-
+import SearchBar from './components/SearchBar';
+import Toolbar from './components/Toolbar';
+import Userlist from './components/Userlist';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phrase: 'Нажми на кнопку!',
-      count: 0
+      activeUser: '',
+      data: [],
+      searchTerm: '',
+      order: true,
+      sortBy: ''
     };
   }
 
-  updateBtn() {
-    const phrases = [
-      'ЖМИ!', 'Не останавливайся!',
-      'У тебя хорошо получается!', 'Красавчик!',
-      'Вот это и есть React!', 'Продолжай!',
-      'Пока ты тут нажимаешь кнопку другие работают!',
-      'Всё хватит!', 'Ну и зачем ты нажал?',
-      'В следующий раз тут будет полезный совет',
-      'Чего ты ждешь от этой кнопки?',
-      'Если дойдёшь до тысячи, то сразу научищься реакту',
-      'ой, всё!', 'Ты нажал кнопку столько раз, что обязан на ней жениться',
-      'У нас было 2 npm-пакета с реактом, 75 зависимостей от сторонних библиотек, '
-      + '5 npm-скриптов и целое множество плагинов галпа всех сортов и расцветок, '
-      + 'а также redux, jquery, mocha, пачка плагинов для eslint и ингерация с firebase. '
-      + 'Не то что бы это был необходимый набор для фронтенда. Но если начал собирать '
-      + 'вебпаком, становится трудно остановиться. Единственное, что вызывало у меня '
-      + 'опасения - это jquery. Нет ничего более беспомощного, безответственного и испорченного, '
-      + 'чем рядовой верстальщик без jquery. Я знал, что рано или поздно мы перейдем и на эту дрянь.',
-      'coub про кота-джедая: http://coub.com/view/spxn',
-      'Дальнобойщики на дороге ярости: http://coub.com/view/6h0dy',
-      'Реакция коллег на ваш код: http://coub.com/view/5rjjw',
-      'Енот ворует еду: http://coub.com/view/xi3cio',
-      'Российский дизайн: http://coub.com/view/16adw5i0'
-    ];
+  componentDidMount() {
+    this.getUsers()
+  }
+
+  getUsers() {
+    const component = this;
+    fetch('/data.json')
+    .then( response => { return response.json() })
+    .then( json => {
+      component.setState({ data: json, activeUser: json[0] })
+    })
+  }
+
+  focusUser(user) {
     this.setState({
-      count: this.state.count + 1,
-      phrase: phrases[parseInt(Math.random() * phrases.length)]
-    });
+      activeUser: user.user
+    })
+  }
+
+  nameSort() {
+    this.sortUsers('name')
+  }
+
+  ageSort() {
+    this.sortUsers('age')
+  }
+
+  sortUsers(field) {
+    if (this.state.sortBy != field) {
+      this.state.order = true
+    } else {
+      this.state.order = !this.state.order
+    }
+
+    let sorted = this.state.data.sort(this._sorting(field, this.state.order))
+
+    this.state.sortBy = field
+    this.setState({
+      data: sorted,
+      activeUser: sorted.filter(function(elem){ return elem.match == true })[0] || sorted[0]
+    })
+  }
+
+
+  search(e) {
+    this.state.searchTerm = e.target.value
+
+    let regexp = new RegExp(e.target.value, 'i')
+    let matchingUsers = this.state.data.map( elem => {
+      elem.match = regexp.test(elem.name)
+      return elem
+    })
+
+    this.setState({
+      data: matchingUsers,
+      activeUser: matchingUsers.filter(function(elem){ return elem.match == true })[0]
+    })
   }
 
   render() {
     return (
-      <div className="container app">
-        <Button count={this.state.count} update={this.updateBtn.bind(this)} />
-        <p style={{marginTop: 2 + 'rem'}}>{this.state.phrase}</p>
+      <div className="app container-fluid">
+        <SearchBar
+          text = { this.state.searchTerm }
+          search = { this.search.bind(this) }
+        />
+        
+        <Toolbar
+          ageSort = { this.ageSort.bind(this) }
+          nameSort = { this.nameSort.bind(this) }
+        />
+
+        <Userlist
+          users = { this.state.data }
+          activeUser = { this.state.activeUser }
+          focusUser = { this.focusUser.bind(this) }
+        />
       </div>
     );
+  }
+
+  _sorting(field, order) {
+    if (order) {
+      return (a, b) => {
+        return (a[field] > b[field]) - (a[field] < b[field])
+      }
+    } else {
+      return (a, b) => {
+        return (a[field] < b[field]) - (a[field] > b[field])
+      }
+    }
   }
 }
