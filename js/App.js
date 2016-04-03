@@ -21,7 +21,7 @@ export default class App extends Component {
 
   getUsers() {
     const component = this;
-    fetch('/data.json')
+    fetch('react-challenge-sort-and-search/data.json')
     .then( response => { return response.json() })
     .then( json => {
       component.setState({ data: json, activeUser: json[0] })
