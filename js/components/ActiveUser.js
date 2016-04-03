@@ -3,7 +3,11 @@ import React, { Component } from 'react';
 export default class ActiveUser extends Component {
   render() {
     let user = this.props.user;
-
+    if (user == undefined) {
+      return(
+        <p>Nothing Found</p>
+      )
+    }
     return(
       <div className="thumbnail">
         <img src= { `images/${user.image}.svg` } />

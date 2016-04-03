@@ -7,10 +7,11 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
       activeUser: '',
-      sortBy: '',
-      order: true
+      data: [],
+      searchTerm: '',
+      order: true,
+      sortBy: ''
     };
   }
 
@@ -25,7 +26,6 @@ export default class App extends Component {
     .then( json => {
       component.setState({ data: json, activeUser: json[0] })
     })
-    return component.state.data
   }
 
   focusUser(user) {
@@ -43,23 +43,61 @@ export default class App extends Component {
   }
 
   sortUsers(field) {
-    if (this.state.sortBy == field) {
-      this.setState({
-        order: !this.state.order
-      })
+    if (this.state.sortBy != field) {
+      this.state.order = true
+    } else {
+      this.state.order = !this.state.order
     }
 
-    let sorted = this.state.data.sort(this._sorting(field))
+    let sorted = this.state.data.sort(this._sorting(field, this.state.order))
 
+    this.state.sortBy = field
     this.setState({
       data: sorted,
-      activeUser: sorted[0],
-      sortBy: field
+      activeUser: sorted[0]
     })
   }
 
-  _sorting(field) {
-    if (this.state.order) {
+
+  search(e) {
+    this.state.searchTerm = e.target.value
+
+    let regexp = new RegExp(e.target.value, 'i')
+    let matchingUsers = this.state.data.map( elem => {
+      elem.match = regexp.test(elem.name)
+      return elem
+    })
+
+    this.setState({
+      data: matchingUsers,
+      activeUser: matchingUsers.filter(function(elem){ return elem.match == true })[0]
+    })
+  }
+
+  render() {
+    return (
+      <div className="app container-fluid">
+        <SearchBar
+          text = { this.state.searchTerm }
+          search = { this.search.bind(this) }
+        />
+        
+        <Toolbar
+          ageSort = { this.ageSort.bind(this) }
+          nameSort = { this.nameSort.bind(this) }
+        />
+
+        <Userlist
+          users = { this.state.data }
+          activeUser = { this.state.activeUser }
+          focusUser = { this.focusUser.bind(this) }
+        />
+      </div>
+    );
+  }
+
+  _sorting(field, order) {
+    if (order) {
       return (a, b) => {
         return (a[field] > b[field]) - (a[field] < b[field])
       }
@@ -68,21 +106,5 @@ export default class App extends Component {
         return (a[field] < b[field]) - (a[field] > b[field])
       }
     }
-  }
-
-  render() {
-    let users = this.state.data
-    let activeUser = this.state.activeUser
-
-    return (
-
-      <div className="app container-fluid">
-        <SearchBar />
-        <Toolbar ageSort = { this.ageSort.bind(this) } nameSort = { this.nameSort.bind(this) } />
-        <Userlist users = { users }
-                  activeUser = { activeUser }
-                  focusUser = { this.focusUser.bind(this) } />
-      </div>
-    );
   }
 }

@@ -10,6 +10,9 @@ export default class Userlist extends Component {
   }
 
   render() {
+    if (this.props.users == undefined) {
+      return <p>Nothing Found</p>
+    }
     return(
       <div className="row">
         <div className="col-sm-8 col-md-9 col-lg-10">
@@ -25,6 +28,9 @@ export default class Userlist extends Component {
             <tbody>
               {
                 this.props.users.map( user => {
+                  if (user.match == false) {
+                    return
+                  }
                   return <UserData
                           user = { user }
                           focusUser = { this.props.focusUser }
