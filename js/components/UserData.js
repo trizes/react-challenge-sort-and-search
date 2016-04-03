@@ -11,7 +11,7 @@ export default class UserData extends Component {
     return(
       <tr onClick = { this.focusUser.bind(this, user) } >
         <td>
-          <img src= { `images/${user.image}.svg` } />
+          <img src= { `images/${user.image}.svg` } className="user-image" />
         </td>
         <td> { user.name } </td>
         <td> { user.age } </td>

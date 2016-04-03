@@ -54,7 +54,7 @@ export default class App extends Component {
     this.state.sortBy = field
     this.setState({
       data: sorted,
-      activeUser: sorted[0]
+      activeUser: sorted.filter(function(elem){ return elem.match == true })[0] || sorted[0]
     })
   }
 
